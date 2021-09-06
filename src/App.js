@@ -12,9 +12,20 @@ function App()
 		{headerName: "Title", field: "title", editable: true},
 		{headerName: "Description", field: "description", editable: true},
 		{headerName: "Learning Objectives", field: "objectives", editable: true},
-		{headerName: "Save", field: "title", cellRendererFramework: (params) =><button variant="primary">Save</button>},
-		{headerName: "Delete", field: "title", cellRendererFramework: (params) =><button variant="danger">Delete</button>},
+		{headerName: "Save", field: "syllabusNumber", cellRendererFramework: (params) =><button variant="primary" onClick={handleSave((params.value) - 1)}>Save</button>},
+		{headerName: "Delete", field: "syllabusNumber", cellRendererFramework: (params) =><button variant="danger" onClick={() => handleDelete(params.value)}>Delete</button>},
 	];
+
+	const handleSave = (index) => {
+		console.log(index);
+		const syllabusItemClone = [...syllabusList];
+		// console.log(syllabusItemClone[index]);
+		onsave(syllabusItemClone[index]);
+	}
+	const onsave = (data) =>
+	{
+		console.log(data);
+	}
 	const addEmptySyllabusForm = (event) => {
 		const syllabusItemsClone = [...syllabusList];
 		const emptySyllabusForm = {
@@ -40,6 +51,30 @@ function App()
 			setSyllabusList(syllabusItems);
 		});
 	}, []);
+
+	const handleDelete = (index) =>
+	{
+		const syllabusItemsClone = [...syllabusList];
+		index = index - 1;
+		const syllabusId = syllabusItemsClone[index].syllabusID;
+		Axios.delete("/" + syllabusId)
+		.then((result) =>
+		{
+			if(result.status === 200)
+			{
+				syllabusItemsClone.splice(index, 1);
+				syllabusItemsClone.map((syllabusItem, index) => {
+				syllabusItem["syllabusNumber"] = index + 1;
+			});
+				setSyllabusList(syllabusItemsClone);
+			}
+		})
+		.catch((error) =>
+		{
+			console.log(error);
+		})
+	}
+	
 	const defaultColumnDefs = {
 		flex: 1,
 		sortable: true,
