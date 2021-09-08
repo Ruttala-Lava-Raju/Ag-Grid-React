@@ -1,4 +1,36 @@
-button{
-  height: 30px;
-  width: 100px;
+body{
+  background-color:darkseagreen
+}
+
+#loginBtn
+{
+  width: 381px;
+  border-radius:20px;
+  border:1px solid white;
+  background-color:black;
+}
+
+#loginBlock
+{
+background-color:black;
+width:500px;
+height:218px;
+margin-left:500px;
+margin-top:143px;
+padding-top:20px;
+border-radius: 20px;
+border:1px solid white;
+}
+
+#spinner
+{
+  margin-left: 600px;
+  margin-top: 150px;
+}
+
+.ag-header-cell-label {
+  justify-content: center;
+}
+.grid-cell-centered {
+  text-align: center;
 }
