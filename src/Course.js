@@ -9,15 +9,17 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import {useHistory} from "react-router-dom";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-// import Chip from "@material-ui/core/Chip";
-// import Autocomplete from "@material-ui/lab/Autocomplete";
-// import TextField from "@material-ui/core/TextField";
+import { Chip }from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from "@material-ui/core/TextField";
+
 
 function Course()
 {
     const history = useHistory(); 
     const[syllabusList, setSyllabusList] =  useState([]);
     const[isLoading, setIsLoading] = useState(true);
+    // const[objectives, setObjectives] = useState([]);
     const[isOperationDone, setIsOperationDone] = useState(false);
     const userName = window.sessionStorage.getItem("userName");
 
@@ -175,26 +177,63 @@ function Course()
         setSyllabusList(syllabusItems);
         setIsLoading(false);
     }
+    
+    const autoCompleteObjectives = (objectives) =>
+    {
+        // objectives = [objectives];
+        let duplicateObjectives = [];
+        duplicateObjectives = objectives.split(",");
+
+        console.log(duplicateObjectives);
+        return(
+        <Autocomplete
+        multiple
+        id="tags-filled"
+        options={[objectives].map((objective) => objective)}
+        defaultValue={duplicateObjectives}
+        freeSolo
+        renderTags={(value, getTagProps) =>
+          value.map((option, index) => (
+            <Chip
+              variant="outlined"
+              label={option}
+              {...getTagProps({ index })}
+            />
+          ))
+        }
+        renderInput={(params) => (
+          <TextField
+            {...params}
+          >
+          </TextField>
+        )}
+      />
+        );
+    }
 
 	const columnDefs = [
 		{headerName: "Syllabus Number", field: "syllabusNumber", cellClass: "grid-cell-centered"},
 		{headerName: "Title", field: "title", editable: true, cellClass: "grid-cell-centered"},
 		{headerName: "Description", field: "description", editable: true, cellClass: "grid-cell-centered"},
-		{headerName: "Learning Objectives", field: "objectives", editable: true, cellClass: "grid-cell-centered"},
+		{headerName: "Learning Objectives", field: "objectives", editable:true, cellClass: "grid-cell-centered"
+        , cellRendererFramework: (params) => autoCompleteObjectives(params.value) },
 		{headerName: "Save/Update", field: "syllabusNumber", cellClass: "grid-cell-centered",
         cellRendererFramework: (params) =><Button variant="outline-primary" size="sm" onClick={() => handleSave((params.value) - 1)}>Save</Button>},
 		{headerName: "Delete", field: "syllabusNumber", cellClass: "grid-cell-centered",
         cellRendererFramework: (params) =><Button variant="outline-danger" size="sm" onClick={() => handleDelete(params.value)}>Delete</Button>},
 	];
 
+    
     const defaultColumnDefs = {
 		flex: 1,
 		sortable: true,
 		resizable: true,
-        minWidth: 100
+        minWidth: 100,
+        minHeight: 100
 	}
 
-	const addEmptySyllabusForm = (event) => {
+
+    const addEmptySyllabusForm = (event) => {
 		const syllabusItemsClone = [...syllabusList];
 		const emptySyllabusForm = {
 			title: null, 
@@ -238,8 +277,8 @@ function Course()
         :
         (
             <>
-                <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="100" aria-valuemax="100" style={{"width": "100%"}}></div>
+                <div className="progress">
+                <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="100" aria-valuemax="100" style={{"width": "100%"}}></div>
                 </div>
             </>
         )}
